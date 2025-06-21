@@ -204,59 +204,9 @@ Get borrowed books summary
 
 N/A
 
-Error Response Example
-----------------------
-
-For validation errors (e.g., duplicate ISBN):
-
-{
-  "success": false,
-  "message": "Validation failed",
-  "error": {
-    "name": "ValidationError",
-    "errors": {
-      "isbn": {
-        "message": "isbn must be unique",
-        "name": "ValidatorError",
-        "properties": {
-          "message": "isbn must be unique",
-          "type": "unique",
-          "path": "isbn",
-          "value": "9780141439518"
-        },
-        "kind": "unique",
-        "path": "isbn",
-        "value": "9780141439518"
-      }
-    }
-  }
-}
-
-Project Structure
------------------
-
-├── src
-│   ├── config
-│   │   ├── db.ts
-│   ├── controllers
-│   │   ├── bookController.ts
-│   │   ├── borrowController.ts
-│   ├── interfaces
-│   │   ├── types.ts
-│   ├── middleware
-│   │   ├── errorHandler.ts
-│   ├── models
-│   │   ├── bookModel.ts
-│   │   ├── borrowModel.ts
-│   ├── routes
-│   │   ├── bookRoutes.ts
-│   │   ├── borrowRoutes.ts
-│   ├── app.ts
-├── .env
-├── package.json
-├── tsconfig.json
-├── README.md
-
+Deployment
+------------
+LINK: https://library-management-drab-xi.vercel.app/
 
 Contributing
 ------------
