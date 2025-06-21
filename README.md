@@ -130,6 +130,10 @@ Video Explanation
 -----------------
 Youtube Link: https://www.youtube.com/watch?v=OR9f8A-dWqg
 
+Postman endpoints
+-----------------
+Postman Link: https://web.postman.co/workspace/My-Workspace~b0b4d638-b173-4917-83b5-dccdb77a7fef/collection/40147817-32859c78-005a-4c8f-8b8a-872239cd1253?action=share&source=copy-link&creator=40147817
+
 Contributing
 ------------
 

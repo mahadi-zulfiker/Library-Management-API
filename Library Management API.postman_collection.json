@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "32859c78-005a-4c8f-8b8a-872239cd1253",
+		"name": "Library Management API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "40147817"
+	},
+	"item": [
+		{
+			"name": "All Books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/books",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Books",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"The Hobbit\",\r\n  \"author\": \"J.R.R. Tolkien\",\r\n  \"genre\": \"FANTASY\",\r\n  \"isbn\": \"9780547928227\",\r\n  \"description\": \"A fantasy adventure about Bilbo Baggins.\",\r\n  \"copies\": 7\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/books",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Books by ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Borrow Books",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/borrow?Content-Type=application/json",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"borrow"
+					],
+					"query": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/books/685648a07d807728277b337e?Content-Type=application/json",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"685648a07d807728277b337e"
+					],
+					"query": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/books/685648a07d807728277b337e",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"685648a07d807728277b337e"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get borrowed books",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/borrow",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"borrow"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://library-management-drab-xi.vercel.app/",
+			"type": "string"
+		}
+	]
+}
