@@ -43,7 +43,7 @@ Installation
 
 1.  Clone the Repository:
     
-    git clone https://github.com/your-username/library-management-api.git
+    git clone https://github.com/mahadi-zulfiker/Library-Management-API
     cd library-management-api
     
 2.  Install Dependencies:
