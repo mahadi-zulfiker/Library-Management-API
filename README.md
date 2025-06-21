@@ -1,6 +1,4 @@
 Library Management System API
-
-Library Management System API
 =============================
 
 A RESTful API built with Express, TypeScript, and MongoDB (using Mongoose) to manage a library's book inventory and borrowing system. This project implements CRUD operations for books, book borrowing functionality, and an aggregated summary of borrowed books, adhering to strict validation and error handling requirements.
@@ -93,7 +91,7 @@ Testing the API
 
 1.  Using Postman:
     
-    Import the provided Postman collection (LibraryManagementAPI.postman\_collection.json) from the repository. Set the baseUrl variable to http://localhost:3000.
+    Set the baseUrl variable to http://localhost:3000 or If you want to just test the CRUD operations you can use the live link I have provided below.
     
 2.  Sample Data:
     
@@ -127,6 +125,10 @@ Testing the API
 Deployment
 ------------
 LINK: https://library-management-drab-xi.vercel.app/
+
+Video Explanation
+-----------------
+Youtube Link: https://www.youtube.com/watch?v=OR9f8A-dWqg
 
 Contributing
 ------------
