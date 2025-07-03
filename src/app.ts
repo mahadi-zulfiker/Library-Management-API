@@ -4,14 +4,18 @@ import connectDB from './config/db';
 import bookRoutes from './routes/bookRoutes';
 import borrowRoutes from './routes/borrowRoutes';
 import { errorHandler } from './middleware/errorHandler';
-import cors from 'cors'; // Import cors
+import cors from 'cors';
 
 dotenv.config();
 
 const app = express();
 
 app.use(express.json());
-app.use(cors()); // Use cors middleware
+app.use(
+  cors({
+    origin: ['http://localhost:5173', 'live-deploy-url']
+   })
+);
 
 connectDB();
 
