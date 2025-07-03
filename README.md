@@ -124,7 +124,9 @@ Testing the API
 
 Deployment
 ------------
-LINK: https://library-management-drab-xi.vercel.app/
+Backend LINK: https://library-management-drab-xi.vercel.app/
+
+Frontend LINK: https://library-frontend-lac.vercel.app/
 
 Video Explanation
 -----------------
