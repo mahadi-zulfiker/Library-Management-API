@@ -49,7 +49,6 @@ export const getBookById = async (req: Request, res: Response, next: NextFunctio
 export const createBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, author, genre, isbn, description, copies } = req.body;
-    // Set available to false if copies are 0 during creation
     const available = copies > 0;
     const book = await Book.create({ title, author, genre, isbn, description, copies, available });
     res.status(201).json({
@@ -95,7 +94,7 @@ export const updateBook = async (req: Request, res: Response, next: NextFunction
 
 export const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await Book.findByIdAndDelete(req.params.bookId); // Corrected from req.params.id
+    const book = await Book.findByIdAndDelete(req.params.bookId);
     if (!book) {
       return res.status(404).json({
         success: false,

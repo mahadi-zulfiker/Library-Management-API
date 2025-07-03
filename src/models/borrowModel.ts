@@ -26,7 +26,6 @@ const borrowSchema = new Schema<IBorrow>({
   },
 });
 
-// Middleware to update `updatedAt` timestamp
 borrowSchema.pre('save', function (next) {
   this.updatedAt = new Date();
   next();

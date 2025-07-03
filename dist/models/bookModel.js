@@ -32,6 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// src/models/bookModel.ts (Ensure this logic is present)
 const mongoose_1 = __importStar(require("mongoose"));
 const bookSchema = new mongoose_1.Schema({
     title: { type: String, required: [true, 'Title is required'] },
@@ -46,17 +47,18 @@ const bookSchema = new mongoose_1.Schema({
     },
     isbn: { type: String, required: [true, 'ISBN is required'], unique: true },
     description: { type: String },
-    copies: { type: Number, required: [true, 'Copies is required'], min: [0, 'Copies must be a positive number'] },
+    copies: { type: Number, required: [true, 'Copies is required'], min: [0, 'Copies must be a non-negative number'] },
     available: { type: Boolean, default: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
-// Middleware to update `updatedAt` timestamp
+// Middleware to update `updatedAt` timestamp and `available` status before saving
 bookSchema.pre('save', function (next) {
     this.updatedAt = new Date();
+    this.available = this.copies > 0; // CRUCIAL: Ensure 'available' is derived from 'copies'
     next();
 });
-// Instance method to update availability
+// Instance method (as per your original schema, though pre-save handles current logic)
 bookSchema.methods.updateAvailability = function () {
     return __awaiter(this, void 0, void 0, function* () {
         this.available = this.copies > 0;
