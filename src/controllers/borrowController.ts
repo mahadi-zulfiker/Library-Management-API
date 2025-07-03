@@ -1,40 +1,8 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Borrow from '../models/borrowModel';
 import Book from '../models/bookModel';
-import { validationResult } from 'express-validator';
-import mongoose from 'mongoose';
 
-export const borrowBook = async (req: Request, res: Response) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, message: 'Validation failed', error: errors.mapped() });
-    }
-
-    const { book: bookId, quantity, dueDate } = req.body;
-
-    const book = await Book.findById(bookId);
-    if (!book) {
-      return res.status(404).json({ success: false, message: 'Book not found', error: 'Not found' });
-    }
-
-    if (book.copies < quantity) {
-      return res.status(400).json({ success: false, message: 'Not enough copies available', error: 'Insufficient copies' });
-    }
-
-    book.copies -= quantity;
-    await book.updateAvailability();
-
-    const borrow = new Borrow({ book: bookId, quantity, dueDate });
-    await borrow.save();
-
-    res.status(201).json({ success: true, message: 'Book borrowed successfully', data: borrow });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
-  }
-};
-
-export const getBorrowedBooksSummary = async (req: Request, res: Response) => {
+export const getBorrowedBooksSummary = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const summary = await Borrow.aggregate([
       {
@@ -54,6 +22,7 @@ export const getBorrowedBooksSummary = async (req: Request, res: Response) => {
       { $unwind: '$book' },
       {
         $project: {
+          _id: 0,
           book: {
             title: '$book.title',
             isbn: '$book.isbn',
@@ -63,8 +32,44 @@ export const getBorrowedBooksSummary = async (req: Request, res: Response) => {
       },
     ]);
 
-    res.status(200).json({ success: true, message: 'Borrowed books summary retrieved successfully', data: summary });
+    res.status(200).json({
+      success: true,
+      message: 'Borrowed books summary retrieved successfully',
+      data: summary,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
+    next(error);
+  }
+};
+
+export const createBorrow = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { book: bookId, quantity, dueDate } = req.body;
+    const book = await Book.findById(bookId);
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: 'Book not found',
+      });
+    }
+    if (quantity > book.copies) {
+      return res.status(400).json({
+        success: false,
+        message: `Requested quantity (${quantity}) exceeds available copies (${book.copies})`,
+      });
+    }
+    const borrow = await Borrow.create({ book: bookId, quantity, dueDate });
+    book.copies -= quantity;
+    if (book.copies === 0) {
+      book.available = false;
+    }
+    await book.save();
+    res.status(201).json({
+      success: true,
+      message: 'Book borrowed successfully',
+      data: borrow,
+    });
+  } catch (error) {
+    next(error);
   }
 };

@@ -1,77 +1,86 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Book from '../models/bookModel';
-import { validationResult } from 'express-validator';
 
-export const createBook = async (req: Request, res: Response) => {
+export const getAllBooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, message: 'Validation failed', error: errors.mapped() });
-    }
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
 
-    const book = new Book(req.body);
-    await book.save();
-    res.status(201).json({ success: true, message: 'Book created successfully', data: book });
+    const books = await Book.find().skip(skip).limit(limit);
+    const total = await Book.countDocuments();
+
+    res.status(200).json({
+      success: true,
+      message: 'Books retrieved successfully',
+      data: books,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
+    next(error);
   }
 };
 
-export const getBooks = async (req: Request, res: Response) => {
+// Other CRUD methods (unchanged or updated similarly)
+export const createBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { filter, sortBy = 'createdAt', sort = 'desc', limit = 10 } = req.query;
-    const query: any = {};
-    if (filter) query.genre = filter;
-
-    const books = await Book.find(query)
-      .sort({ [sortBy as string]: sort === 'asc' ? 1 : -1 })
-      .limit(Number(limit));
-
-    res.status(200).json({ success: true, message: 'Books retrieved successfully', data: books });
+    const book = await Book.create(req.body);
+    res.status(201).json({
+      success: true,
+      message: 'Book created successfully',
+      data: book,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
+    next(error);
   }
 };
 
-export const getBookById = async (req: Request, res: Response) => {
+export const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await Book.findById(req.params.bookId);
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!book) {
-      return res.status(404).json({ success: false, message: 'Book not found', error: 'Not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Book not found',
+      });
     }
-    res.status(200).json({ success: true, message: 'Book retrieved successfully', data: book });
+    if (book.copies === 0) {
+      book.available = false;
+      await book.save();
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Book updated successfully',
+      data: book,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
+    next(error);
   }
 };
 
-export const updateBook = async (req: Request, res: Response) => {
+export const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ success: false, message: 'Validation failed', error: errors.mapped() });
-    }
-
-    const book = await Book.findByIdAndUpdate(req.params.bookId, req.body, { new: true });
+    const book = await Book.findByIdAndDelete(req.params.id);
     if (!book) {
-      return res.status(404).json({ success: false, message: 'Book not found', error: 'Not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'Book not found',
+      });
     }
-
-    await book.updateAvailability();
-    res.status(200).json({ success: true, message: 'Book updated successfully', data: book });
+    res.status(200).json({
+      success: true,
+      message: 'Book deleted successfully',
+      data: null,
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
-  }
-};
-
-export const deleteBook = async (req: Request, res: Response) => {
-  try {
-    const book = await Book.findByIdAndDelete(req.params.bookId);
-    if (!book) {
-      return res.status(404).json({ success: false, message: 'Book not found', error: 'Not found' });
-    }
-    res.status(200).json({ success: true, message: 'Book deleted successfully', data: null });
-  } catch (error) {
-    res.status(500).json({ success: false, message: 'Server error', error });
+    next(error);
   }
 };
