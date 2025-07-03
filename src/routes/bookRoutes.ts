@@ -17,13 +17,13 @@ router.post(
   ],
   createBook
 );
-router.get('/', getBooks);
-router.get('/:bookId', getBookById);
+router.get('/', getBooks); // Corrected to use getBooks
+router.get('/:bookId', getBookById); // Corrected to use getBookById
 router.put(
   '/:bookId',
   [body('copies').optional().isInt({ min: 0 }).withMessage('Copies must be a positive number')],
   updateBook
 );
-router.delete('/:bookId', deleteBook);
+router.delete('/:bookId', deleteBook); // Corrected to use deleteBook
 
 export default router;

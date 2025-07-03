@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Book from '../models/bookModel';
 
-export const getAllBooks = async (req: Request, res: Response, next: NextFunction) => {
+export const getBooks = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
@@ -26,10 +26,32 @@ export const getAllBooks = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// Other CRUD methods (unchanged or updated similarly)
+export const getBookById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const book = await Book.findById(req.params.bookId);
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: 'Book not found',
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Book retrieved successfully',
+      data: book,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 export const createBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await Book.create(req.body);
+    const { title, author, genre, isbn, description, copies } = req.body;
+    // Set available to false if copies are 0 during creation
+    const available = copies > 0;
+    const book = await Book.create({ title, author, genre, isbn, description, copies, available });
     res.status(201).json({
       success: true,
       message: 'Book created successfully',
@@ -42,20 +64,25 @@ export const createBook = async (req: Request, res: Response, next: NextFunction
 
 export const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
+    const { copies, ...otherUpdates } = req.body;
+    let updateData = { ...otherUpdates };
+
+    if (copies !== undefined) {
+      updateData = { ...updateData, copies, available: copies > 0 };
+    }
+
+    const book = await Book.findByIdAndUpdate(req.params.bookId, updateData, {
       new: true,
       runValidators: true,
     });
+
     if (!book) {
       return res.status(404).json({
         success: false,
         message: 'Book not found',
       });
     }
-    if (book.copies === 0) {
-      book.available = false;
-      await book.save();
-    }
+
     res.status(200).json({
       success: true,
       message: 'Book updated successfully',
@@ -68,7 +95,7 @@ export const updateBook = async (req: Request, res: Response, next: NextFunction
 
 export const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const book = await Book.findByIdAndDelete(req.params.id);
+    const book = await Book.findByIdAndDelete(req.params.bookId); // Corrected from req.params.id
     if (!book) {
       return res.status(404).json({
         success: false,

@@ -13,19 +13,19 @@ export const getBorrowedBooksSummary = async (req: Request, res: Response, next:
       },
       {
         $lookup: {
-          from: 'books',
+          from: 'books', // Collection name for books
           localField: '_id',
           foreignField: '_id',
-          as: 'book',
+          as: 'bookDetails', // Changed from 'book' to avoid conflict with unwind
         },
       },
-      { $unwind: '$book' },
+      { $unwind: '$bookDetails' },
       {
         $project: {
           _id: 0,
           book: {
-            title: '$book.title',
-            isbn: '$book.isbn',
+            title: '$bookDetails.title',
+            isbn: '$bookDetails.isbn',
           },
           totalQuantity: 1,
         },

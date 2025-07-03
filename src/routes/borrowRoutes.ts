@@ -1,5 +1,5 @@
 import express from 'express';
-import { borrowBook, getBorrowedBooksSummary } from '../controllers/borrowController';
+import { createBorrow, getBorrowedBooksSummary } from '../controllers/borrowController'; // Changed borrowBook to createBorrow
 import { body } from 'express-validator';
 
 const router = express.Router();
@@ -11,7 +11,7 @@ router.post(
     body('quantity').isInt({ min: 1 }).withMessage('Quantity must be a positive number'),
     body('dueDate').isISO8601().toDate().withMessage('Invalid due date'),
   ],
-  borrowBook
+  createBorrow // Changed to createBorrow
 );
 router.get('/', getBorrowedBooksSummary);
 

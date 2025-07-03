@@ -10,7 +10,7 @@ export interface IBook extends Document {
   available: boolean;
   createdAt: Date;
   updatedAt: Date;
-  updateAvailability: () => Promise<void>;
+  updateAvailability: () => Promise<void>; // This is a method, not a field
 }
 
 export interface IBorrow extends Document {
